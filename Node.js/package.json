@@ -1,0 +1,11 @@
+{
+  "name": "practice",
+  "version": "1.0.0",
+  "main": "simple-router.mjs",
+  "scripts": {
+    "start": "node simple-router.mjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
