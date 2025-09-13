@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Passing data from server to client</h1>
+    <!-- accessing data from server -->
+    <h1>
+        Wellcome, <%= username %>
+    </h1>
+    <p>Email: <%= email %></p>
+    <p>Age: <%= age %></p>
+    <p>Phone No.: <%= phone %></p>
+    <p>Address : <%= address %></p>
+    
+    <% if (isPremiumUser) { %>
+        <p>You are a Premium Member</p>
+    <% } else { %>
+        <p>You are a Free Member</p>
+    <% } %>
+
+    <p><%=(isLogin)? "Wellcome you are logged in" : "You are not logged in(Please Log In)" %></p>
+</body>
+</html>

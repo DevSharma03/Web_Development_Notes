@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+</head>
+<body>
+    <h1>Welcome to Home Page</h1>
+    <h2>Posts</h2>
+
+    <!-- Form for submitting new posts -->
+    <form id="app-post-form">
+        <label for="title">Title:</label>
+        <br>
+        <!-- Input field for the title of the post -->
+        <input type="text" id="title" name="title" required>
+        <br>
+
+        <label for="content">Content:</label>
+        <br>
+        <!-- Textarea for the content of the post -->
+        <textarea id="content" name="content" required></textarea>
+        <br>
+
+        <!-- Submit button to send the form data -->
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Button to fetch and display posts -->
+    <button id="get-post-btn">Get Posts</button>
+    <!-- Div to display the list of posts -->
+    <div id="output"></div>
+
+    <script>
+        // Get references to DOM elements
+        const output = document.getElementById('output'); // Div to display output
+        const button = document.getElementById('get-post-btn'); // Button to fetch posts
+        const form = document.getElementById('app-post-form'); // Form for submitting posts
+
+        // Function to fetch and display posts from the server
+        async function showPost() {
+            try {
+                // Fetch posts from the server
+                const res = await fetch('http://localhost:3000/api/posts');
+                if (!res.ok) {
+                    throw new Error('Could not fetch the data');
+                }
+
+                const posts = await res.json(); // Parse the response as JSON
+                output.innerHTML = ""; // Clear previous content
+
+                // Loop through posts and display them
+                posts.forEach((post) => {
+                    const postElement = document.createElement('div'); // Create a div element for the post
+                    postElement.textContent = post.title; // Set the post title as its content
+                    output.appendChild(postElement); // Add the post to the output div
+                });
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                // Display an error message in the output div
+                output.innerHTML = `<p style="color: red;">Error fetching data: ${error.message}</p>`;
+            }
+        }
+
+        // Function to submit a new post to the server
+        async function submitPost(e) {
+            e.preventDefault(); // Prevent the form from reloading the page
+
+            // Get the form data
+            const formData = new FormData(form);
+            const title = formData.get('title'); // Extract the title from the form
+            const content = formData.get('content'); // Extract the content from the form
+
+            // Validation: Check if both title and content are provided
+            if (!title || !content) {
+                alert("Both Title and Content are required!");
+                return;
+            }
+
+            try {
+                // Send a POST request to create a new post
+                const res = await fetch('http://localhost:3000/api/posts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ title, content }) // Send both title and content
+                });
+
+                if (!res.ok) {
+                    throw new Error('Could not submit the post');
+                }
+
+                const newPost = await res.json(); // Parse the response as JSON
+                const postElement = document.createElement('div'); // Create a div element for the new post
+                postElement.textContent = newPost.title; // Set the post title as its content
+                output.appendChild(postElement); // Add the new post to the output div
+
+                // Clear the form after successful submission
+                form.reset(); 
+            } catch (error) {
+                console.error("Error submitting data:", error);
+                // Display an error message
+                alert("Error submitting post: " + error.message);
+            }
+        }
+
+        // Event Listeners
+        button.addEventListener('click', showPost); // When the "Get Posts" button is clicked, fetch and display posts
+        form.addEventListener('submit', submitPost); // When the form is submitted, handle the post submission
+    </script>
+</body>
+</html>
+
+
+

@@ -1,0 +1,666 @@
+
+| **Method**                           | **Description**                                                                | **Example**                                                                                                                                   |
+|--------------------------------------|--------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| `app.get(path, callback)`            | Handles HTTP GET requests to a specified path.                                 | `app.get('/', (req, res) => { res.send('Hello World!'); });`                                                                                  |
+| `app.post(path, callback)`           | Handles HTTP POST requests to a specified path.                                | `app.post('/submit', (req, res) => { res.send('Form submitted'); });`                                                                         |
+| `app.put(path, callback)`            | Handles HTTP PUT requests, typically for updating data.                        | `app.put('/update/:id', (req, res) => { res.send(`Updated resource with ID: ${req.params.id}`); });`                                           |
+| `app.delete(path, callback)`         | Handles HTTP DELETE requests, typically for deleting resources.                | `app.delete('/delete/:id', (req, res) => { res.send(`Deleted resource with ID: ${req.params.id}`); });`                                        |
+| `app.all(path, callback)`            | Handles all HTTP request methods (GET, POST, etc.) for a specific path.        | `app.all('/any', (req, res) => { res.send(`Received a ${req.method} request`); });`                                                           |
+| `app.use(middleware)`                | Mounts middleware to handle requests for a specific path or globally.          | `app.use(express.json()); app.use('/api', (req, res, next) => { console.log('Request to /api endpoint'); next(); });`                         |
+| `app.patch(path, callback)`          | Handles HTTP PATCH requests, typically for partial resource updates.           | `app.patch('/update-part/:id', (req, res) => { res.send(`Partially updated resource with ID: ${req.params.id}`); });`                        |
+| `app.head(path, callback)`           | Handles HTTP HEAD requests, similar to GET but without response body.          | `app.head('/check', (req, res) => { res.sendStatus(200); });`                                                                                 |
+| `app.options(path, callback)`        | Handles HTTP OPTIONS requests, typically for handling CORS.                    | `app.options('/resource', (req, res) => { res.set('Allow', 'GET, POST, PUT, DELETE'); res.sendStatus(200); });`                               |
+| `app.set(name, value)`               | Sets an application setting (e.g., view engine, environment).                  | `app.set('view engine', 'ejs');`                                                                                                               |
+| `app.get(name)`                      | Retrieves the value of a previously set application setting.                   | `const viewEngine = app.get('view engine'); console.log(viewEngine);`                                                                          |
+| `app.listen(port, callback)`         | Starts the server and listens for incoming requests on a specified port.       | `app.listen(3000, () => { console.log('Server is running on port 3000'); });`                                                                 |
+| `res.send(body)`                     | Sends a response with the specified body (string, buffer, or object).          | `res.send('Hello, world!');`                                                                                                                  |
+| `res.json(body)`                     | Sends a JSON response with the specified body.                                 | `res.json({ message: 'Hello, world!' });`                                                                                                      |
+| `res.status(code)`                   | Sets the HTTP status code for the response.                                    | `res.status(404).send('Not Found');`                                                                                                           |
+| `res.redirect(url)`                  | Redirects the client to the specified URL.                                     | `res.redirect('https://www.example.com');`                                                                                                     |
+| `res.render(view, locals)`           | Renders a template and sends the rendered result as the response.              | `res.render('home', { message: 'Welcome to the homepage!' });`                                                                                |
+| `res.sendFile(path, options)`        | Sends a file as the response.                                                  | `res.sendFile(path.join(__dirname, 'public', 'index.html'));`                                                                                 |
+| `req.body`                           | Contains data sent in the body of POST/PUT requests (requires middleware).     | `app.post('/submit', (req, res) => { console.log(req.body); res.send('Form submitted'); });`                                                   |
+| `req.params`                         | Contains route parameters in the URL (e.g., `/user/:id`).                      | `app.get('/user/:id', (req, res) => { res.send(`User ID: ${req.params.id}`); });`                                                              |
+| `req.query`                          | Contains query string parameters in the URL (e.g., `/search?q=node`).          | `app.get('/search', (req, res) => { res.send(`You searched for: ${req.query.q}`); });`                                                        |
+| `req.headers`                        | Contains headers sent by the client in the request.                            | `app.get('/headers', (req, res) => { console.log(req.headers); res.send('Headers logged'); });`                                                 |
+| `req.cookies`                        | Contains cookies sent by the client (requires `cookie-parser` middleware).     | `app.use(cookieParser()); app.get('/cookie', (req, res) => { res.send(`User cookie: ${req.cookies.user}`); });`                                |
+| `res.cookie(name, value, options)`   | Sets a cookie with the given name, value, and optional settings.               | `res.cookie('user', 'Devashish', { maxAge: 900000, httpOnly: true });`                                                                          |
+| `res.clearCookie(name, options)`     | Clears a cookie by setting its expiry date to the past.                        | `res.clearCookie('user'); res.send('User cookie has been cleared');`                                                                           |
+| `app.param(name, callback)`          | Defines middleware for specific route parameters.                              | `app.param('id', (req, res, next, id) => { console.log(`ID: ${id}`); next(); }); app.get('/user/:id', (req, res) => { res.send(req.params.id); });`|
+| `app.route(path)`                    | Creates a chainable route handler for a specific path.                         | `app.route('/user').get((req, res) => { res.send('Get user details'); }).post((req, res) => { res.send('Create a user'); });`                  |
+| `app.locals`                         | Stores global variables used by the application (often used with views).       | `app.locals.siteName = 'My App'; app.get('/', (req, res) => { res.render('index'); });`                                                         |
+| `res.type(type)`                     | Sets the `Content-Type` header for the response.                               | `res.type('json').send({ message: 'Hello' });`                                                                                                 |
+| `res.sendStatus(code)`               | Sends a status code along with its default message.                            | `res.sendStatus(404);`                                                                                                                          |
+| `res.vary(field)`                    | Adds a `Vary` header to the response, useful for cache control.                | `res.vary('User-Agent');`                                                                                                                      |
+| `app.disable(name)`                  | Disables a setting (e.g., `x-powered-by`).                                     | `app.disable('x-powered-by');`                                                                                                                 |
+| `app.enable(name)`                   | Enables a setting in the application (e.g., `trust proxy`).                    | `app.enable('trust proxy');`                                                                                                                   |
+| `req.originalUrl`                    | Returns the full URL of the request, including the path and query string.      | `console.log(req.originalUrl);`                                                                                                                |
+| `res.status(code).send(body)`        | Combines setting a status code and sending a response body.                    | `res.status(400).send('Bad Request');`                                                                                                         |
+
+
+
+
+
++++ Color Packages in Express +++
+--- The colors package in Node.js is used to add color and style to console output. It is not specific to Express but is commonly used alongside it to enhance logging and debugging.
+
+---1. Installation
+Install the colors package using npm:
+
+bash
+Copy code
+npm install colors
+
+
+
+---2. Usage
+Import the colors package and use it to style your console messages. 
+Here's an example:
+const express = require('express');
+const colors = require('colors');
+
+const app = express();
+const port = 3000;
+
+// Middleware to log requests with colors
+app.use((req, res, next) => {
+    console.log(`Incoming request: ${req.method} ${req.url}`.green);
+    next();
+});
+
+// Routes
+app.get('/', (req, res) => {
+    console.log('Serving the root route'.blue);
+    res.send('Hello, World!');
+});
+
+app.get('/error', (req, res) => {
+    console.log('This is an error route'.red);
+    res.status(500).send('Something went wrong!');
+});
+
+// Start the server
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`.cyan);
+});
+
+
+
+---3. Colors and Styles Available
+The colors package provides multiple colors and styles for formatting your console output. Here are some examples:
+
+Colors:
+text.red
+text.green
+text.yellow
+text.blue
+text.magenta
+text.cyan
+text.white
+text.gray
+Styles:
+text.bold
+text.italic (not widely supported)
+text.underline
+text.inverse
+Combinations:
+You can chain styles together:
+
+javascript
+Copy code
+console.log('This is bold and red'.bold.red);
+
+
+
+++++ EJS Templates ++++
+Here’s a detailed explanation of how to set up and use the EJS (Embedded JavaScript) template engine for rendering dynamic content and serving static files in an Express.js application. This guide walks you through everything step-by-step:
+
+What is EJS?
+EJS (Embedded JavaScript) is a simple templating language that lets you generate HTML dynamically. It allows you to embed JavaScript code in your HTML templates to handle dynamic data.
+
+Why Use EJS?
+Dynamic HTML Rendering: EJS lets you render dynamic web pages by combining static HTML with dynamic data.
+Seamless Integration with Express.js: It integrates easily with Express.js, making it ideal for server-side rendering.
+Reusable Templates: You can use partials (like headers and footers) across multiple pages for better maintainability.
+Setting Up an Express.js App with EJS
+1. Install Dependencies
+First, install the required packages:
+
+bash
+Copy code
+npm install express ejs
+2. Project Structure
+Organize your project files as follows:
+
+php
+Copy code
+project/
+├── public/           # Static files folder
+│   ├── css/          # CSS styles
+│   │   └── style.css
+│   ├── js/           # JavaScript files
+│   │   └── script.js
+│   └── images/       # Images
+│       └── logo.png
+├── views/            # EJS templates folder
+│   ├── partials/     # For reusable components (e.g., header, footer)
+│   │   ├── header.ejs
+│   │   ├── footer.ejs
+│   ├── index.ejs     # Home page template
+│   ├── about.ejs     # About page template
+├── app.js            # Main server file
+└── package.json      # Project dependencies and metadata
+3. Set Up the Server
+Create the app.js file and add the following code:
+
+app.js
+javascript
+Copy code
+const express = require('express');
+const path = require('path');
+
+const app = express();
+
+// Set EJS as the template engine
+app.set('view engine', 'ejs');
+
+// Set the 'views' directory for templates
+app.set('views', path.join(__dirname, 'views'));
+
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Home route
+app.get('/', (req, res) => {
+    res.render('index', { 
+        title: 'Home Page', 
+        message: 'Welcome to Our Website!' 
+    });
+});
+
+// About route
+app.get('/about', (req, res) => {
+    res.render('about', { 
+        title: 'About Us', 
+        message: 'Learn more about us on this page.' 
+    });
+});
+
+// Start the server
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
+4. EJS Templates
+The views/ folder contains the EJS files that define the structure of your web pages.
+
+views/partials/header.ejs
+html
+Copy code
+<header>
+    <h1>My Website</h1>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+    </nav>
+</header>
+views/partials/footer.ejs
+html
+Copy code
+<footer>
+    <p>&copy; 2024 My Website. All rights reserved.</p>
+</footer>
+views/index.ejs
+html
+Copy code
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <% include partials/header %>
+    <main>
+        <h2><%= message %></h2>
+        <p>Welcome to the home page!</p>
+    </main>
+    <% include partials/footer %>
+</body>
+</html>
+views/about.ejs
+html
+Copy code
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <% include partials/header %>
+    <main>
+        <h2><%= message %></h2>
+        <p>This is the about page. Learn more about us here!</p>
+    </main>
+    <% include partials/footer %>
+</body>
+</html>
+5. Static Files
+Static files like CSS, JavaScript, and images are served from the public folder.
+
+public/css/style.css
+css
+Copy code
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+header {
+    background: #333;
+    color: white;
+    padding: 1em 0;
+    text-align: center;
+}
+
+header nav a {
+    color: white;
+    margin: 0 10px;
+    text-decoration: none;
+}
+
+footer {
+    background: #333;
+    color: white;
+    text-align: center;
+    padding: 1em 0;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+}
+6. Run the Server
+Start your application:
+
+bash
+Copy code
+node app.js
+Visit the following URLs in your browser:
+
+http://localhost:3000/ → Home Page
+http://localhost:3000/about → About Page
+Key Features of the Setup
+Dynamic Data:
+
+Data (like title and message) is passed from the server to the EJS template using res.render().
+<%= variable %>: Embeds the value of a variable.
+<% code %>: Embeds JavaScript code (e.g., loops or conditionals).
+Reusable Partials:
+
+The <% include path/to/partial %> syntax allows you to reuse common sections like headers and footers.
+Static Files:
+
+Files like CSS, JavaScript, and images are accessible via the / path since they are served from the public directory.
+Separation of Concerns:
+
+HTML templates (views/), static files (public/), and server logic (app.js) are separated for maintainability.
+Advantages of Using EJS
+Simple to learn and use.
+Integrates seamlessly with Express.js.
+Supports full JavaScript syntax.
+Allows for partials and reusable components.
+By using EJS and static files, you can create a clean, maintainable, and scalable web application structure.
+
+
+
+
++++++ express.static Middleware +++++
+
+### **What is `express.static` Middleware?**
+
+`express.static` is a built-in middleware function in Express.js used to serve static files such as images, CSS files, JavaScript files, and more. Static files are assets that do not change dynamically and are directly served to the client as they are stored on the server.
+
+---
+
+### **How Does It Work?**
+The `express.static` middleware specifies a directory from which static assets can be served. When a request is made for a static file, the middleware looks for the requested file in the directory and serves it if found.
+
+---
+
+### **Syntax**
+```javascript
+express.static(root, [options])
+```
+
+- **`root`**: The root directory from which to serve static assets.
+- **`options`** (optional): An object to configure settings such as caching and file extensions.
+
+---
+
+### **Examples**
+
+#### **1. Serving Static Files from a Directory**
+Suppose you have a directory named `public` with the following structure:
+
+```
+public/
+├── css/
+│   └── styles.css
+├── js/
+│   └── script.js
+└── images/
+    └── logo.png
+```
+
+**Server Code:**
+```javascript
+const express = require('express');
+const app = express();
+const port = 3000;
+
+// Use express.static to serve the 'public' directory
+app.use(express.static('public'));
+
+app.get('/', (req, res) => {
+    res.send('<h1>Welcome to Express</h1><p>Visit /css/styles.css, /js/script.js, or /images/logo.png</p>');
+});
+
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+});
+```
+
+- Navigate to:
+  - [http://localhost:3000/css/styles.css](http://localhost:3000/css/styles.css)
+  - [http://localhost:3000/js/script.js](http://localhost:3000/js/script.js)
+  - [http://localhost:3000/images/logo.png](http://localhost:3000/images/logo.png)
+
+The files are served directly without defining routes for them.
+
+---
+
+#### **2. Serving Static Files with a Virtual Path**
+You can use a virtual path prefix with `express.static` to serve files.
+
+**Server Code:**
+```javascript
+app.use('/static', express.static('public'));
+
+app.get('/', (req, res) => {
+    res.send('<h1>Welcome</h1><p>Visit /static/css/styles.css</p>');
+});
+```
+
+- Access the static file at: [http://localhost:3000/static/css/styles.css](http://localhost:3000/static/css/styles.css).
+
+---
+
+#### **3. Serving Multiple Static Directories**
+You can serve files from multiple directories.
+
+```javascript
+app.use(express.static('public'));
+app.use(express.static('assets'));
+```
+
+If a file is not found in `public`, it will look in `assets`.
+
+---
+
+#### **4. Using `options` with `express.static`**
+You can configure caching and other settings using the `options` parameter.
+
+**Options Example:**
+```javascript
+app.use(express.static('public', {
+    extensions: ['html'], // Serve files with `.html` extension without specifying it
+    maxAge: '1d',         // Cache static files for one day
+    index: 'index.html'   // Default file to serve for a directory
+}));
+```
+
+---
+
+### **Detailed Explanation of Key Features**
+
+#### **1. Default Behavior**
+When `express.static` is used, the server automatically resolves the requested file path relative to the specified directory.
+
+#### **2. File Extensions**
+If you request `/styles`, it won't resolve to `styles.css` unless you specify `extensions` in the options:
+```javascript
+app.use(express.static('public', { extensions: ['css'] }));
+```
+
+#### **3. Caching**
+By default, static files are cached by browsers. You can control this behavior using the `maxAge` option:
+```javascript
+app.use(express.static('public', { maxAge: '7d' })); // Cache files for 7 days
+```
+
+#### **4. Directory Index**
+If a directory is requested, the default `index.html` is served. You can customize this:
+```javascript
+app.use(express.static('public', { index: 'home.html' }));
+```
+
+---
+
+### **Security Notes**
+1. **Access Control:**
+   Avoid exposing sensitive files through the `express.static` directory.
+2. **Restrict Path Traversal:**
+   Ensure that file paths cannot be exploited to access files outside the intended directory.
+3. **Helmet Middleware:**
+   Use `helmet` for additional security headers.
+
+```bash
+npm install helmet
+```
+
+**Usage:**
+```javascript
+const helmet = require('helmet');
+app.use(helmet());
+```
+
+---
+
+### **Conclusion**
+The `express.static` middleware is a straightforward way to serve static files in an Express.js application. It is efficient and minimizes the need to write explicit routes for static assets. By configuring its options and following security best practices, you can enhance the performance and safety of your application. 
+
+Let me know if you'd like to dive deeper or have specific questions!
+
+
+
+
+
+
+
+++++ EJS Basic Syntax ++++
+
+### Common Syntax for EJS
+
+EJS (Embedded JavaScript) provides a simple and flexible syntax for embedding JavaScript into HTML templates. Below is a breakdown of the most commonly used EJS syntax.
+
+---
+
+### **1. Output Data**
+
+#### a. Escaped Output (`<%= %>`)
+Escapes special characters to prevent HTML injection.
+```html
+<p><%= user.name %></p>
+```
+Example Output:
+```html
+<p>John Doe</p>
+```
+
+#### b. Unescaped Output (`<%- %>`)
+Outputs raw HTML content without escaping.
+```html
+<p><%- user.description %></p>
+```
+If `user.description = "<strong>Hello</strong>"`, the output will be:
+```html
+<p><strong>Hello</strong></p>
+```
+
+---
+
+### **2. JavaScript Control Structures**
+
+#### a. Conditionals
+```html
+<% if (user.isAdmin) { %>
+    <p>Welcome, Admin!</p>
+<% } else { %>
+    <p>Welcome, User!</p>
+<% } %>
+```
+
+#### b. Loops
+```html
+<ul>
+    <% for (let i = 0; i < items.length; i++) { %>
+        <li><%= items[i] %></li>
+    <% } %>
+</ul>
+```
+
+OR with `forEach`:
+```html
+<ul>
+    <% items.forEach(item => { %>
+        <li><%= item %></li>
+    <% }) %>
+</ul>
+```
+
+---
+
+### **3. Include Partials**
+
+Use the `include` function to insert reusable templates (partials).
+```html
+<%- include('partials/header') %>
+<h1>Page Content</h1>
+<%- include('partials/footer') %>
+```
+
+---
+
+### **4. Comments**
+
+#### a. HTML Comments
+Displayed in the rendered HTML.
+```html
+<!-- This is an HTML comment -->
+```
+
+#### b. EJS Comments
+Not included in the rendered HTML.
+```html
+<% // This is an EJS comment %>
+```
+
+---
+
+### **5. Raw JavaScript Execution**
+
+You can execute any JavaScript code within `<% %>` tags.
+```html
+<%
+    let message = 'Hello, EJS!';
+    console.log(message);
+%>
+<p><%= message %></p>
+```
+
+---
+
+### **6. Default Values with Ternary Operators**
+Provide default values if a variable is undefined.
+```html
+<p><%= user.name || 'Guest' %></p>
+```
+
+---
+
+### **7. Escaping Special Characters**
+
+To output `<%`, use `<%%>` to avoid conflict with EJS syntax.
+```html
+<%% This will render as "<%" in the output %>
+```
+
+---
+
+### **8. Iterating Over Objects**
+
+Use `Object.keys()` to loop over an object.
+```html
+<ul>
+    <% Object.keys(data).forEach(key => { %>
+        <li><%= key %>: <%= data[key] %></li>
+    <% }) %>
+</ul>
+```
+
+---
+
+### Example EJS Template
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <h1>Welcome, <%= user.name %></h1>
+
+    <% if (user.isAdmin) { %>
+        <p>You have admin privileges.</p>
+    <% } else { %>
+        <p>You are a regular user.</p>
+    <% } %>
+
+    <h2>Your Items</h2>
+    <ul>
+        <% user.items.forEach(item => { %>
+            <li><%= item %></li>
+        <% }) %>
+    </ul>
+
+    <%- include('partials/footer') %>
+</body>
+</html>
+```
+
+---
+
+### **Key Syntax Tags**
+
+| Syntax         | Description                                    | Example                                                                |
+|----------------|------------------------------------------------|------------------------------------------------------------------------|
+| `<%= %>`       | Escapes and outputs the value.                 | `<%= user.name %>`                                                     |
+| `<%- %>`       | Outputs unescaped (raw) value.                 | `<%- user.description %>`                                              |
+| `<% %>`        | Executes JavaScript without output.            | `<% if (user.isAdmin) { %>Welcome Admin!<% } %>`                       |
+| `<%# %>`       | EJS comment (not rendered in HTML).            | `<%# This is a comment %>`                                             |
+| `<%% %>`       | Escapes EJS syntax.                            | `<%% This will output <% in HTML %>`                                   |
+| `<%- include() %>` | Includes another template.                 | `<%- include('partials/footer') %>`                                    |
+
+This syntax allows developers to write dynamic and modular templates easily with EJS.
