@@ -1,0 +1,117 @@
+### popular AI Tools for web development ###
+1.chat gpt
+2.gemini
+3.copilot
+4.perplexity
+5.claude **Best**
+6.codeium AI
+
+## Practice Way ##
+1. ask question to AI 
+2. Solve those Questions 
+3. now ask AI if the code can be written in any better way 
+4. last ask about the advancement you can do 
+
+### GitHub Link ###
+https://github.com/tweneboah/Full-Stack-Web-Development-Bootcamp-Course
+for code of all the parts in this
+
+### HTML Structure ###
+1. <!DOCTYPE html>
+- shows the version of html 
+
+2. lang = "en"
+- show the language of the content 
+
+
+## HTML tags ##
+$ Overview $
+- html tags comes in pair: opening and closing
+- Some tags are self-closing
+- tags instruct the browser how to render enclosed content
+
+
+$ Non-Self Closing tags $
+<tagname attribute1 = "value1" attribute2 = "value2"></tagname>
+- <tagname>: opening tag
+- </tagname>: closing tag
+- attribute = "value" : modify the tags behaviour(apperiance)
+
+$ Self Closing tags $
+<tagname attribute1 = "value1" attribute2 = "value2" />
+- <tagname>: opening tag
+- attribute = "value" : modify the tags behaviour(apperiance)
+
+
+### netlify.app - For deployment ###
+
+### Number Method ###
+$ name.toFixed(2)
+- use to get the approximate value of a decimal value.
+
+$ eg. let qty = "50";
+    let convertedNum = parseFloat(qty);
+    console.log(convertedNum): -> this will print number not a string because of method parseFloat.
+
+
+
+### Functions in JS ###
+- A reusable block of code that performs a specific task. 
+steps to create and use function 
+1. define the function (declared)
+2. write our code in the function 
+3. call/use the function (function invocation)
+
+eg.
+let a = 10;
+let b = 20;
+function Add(){
+    result = a+b;
+    console.log(result);
+}
+Add();
+a = 20; 
+Add();
+b = 90;
+Add();
+
+
+$$ Return KeyWord $$
+- when we use return keyword it doesnt provide us the output directly we need to use console.log function to print the output.
+eg.
+function Add(a, b){
+    return a+b;
+}
+console.log(Add(15, 5));
+
+
+$$ Function Expression $$
+eg.
+const addNumber = function(a, b){
+    let result = a+b;
+    return result;
+}
+let x = addNumber(10, 5);
+console.log(x);
+alert(x);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
